@@ -65,6 +65,8 @@ switch ($renderview)
         print_r("Esto es file");
         echo "</pre>";
         include_once($config['controllers'].'/'.$_GET['controller'].'.php');
+        new usuariosController($config);
+//         $obj = new {$_GET['controller']."Crontroller"}($config);
     break;
     case 'error':
         header("Status: 404 Not Found");
@@ -83,8 +85,9 @@ switch ($renderview)
 /**
  * Mostrar 
  */
-echo render($content, $config['layout']);
-        
+echo views::render($content, $config['layout']);
+
+
 ?>
 
 

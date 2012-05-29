@@ -2,13 +2,18 @@
 /*
  *
  */
-require_once 'functions_db_abstract.php';
-require_once 'functions_array_interface.php';
 
-class dbConnect extends dbConnectAbstract implements arrayInterface
-{
+class dbConnect {
 	
-	public function connectDBServer($config) {
+	public $link = '';
+	
+	function __construct($config) {
+		$this->link = $this->connectDBServer ( $config );
+		
+		$this->name = "dbConnect";
+	}
+	
+	function connectDBServer($config) {
 		$link = mysql_connect ( $config ['host'], $config ['userdb'], $config ['passdb'] );
 		if (! $link) {
 			die ( 'No pudo conectarse: ' . mysql_error () );
@@ -19,35 +24,39 @@ class dbConnect extends dbConnectAbstract implements arrayInterface
 		return $link;
 	}
 	
-	protected function selectDB($config) {
+	function selectDB($config) {
 		mysql_select_db ( $config ['db'] );
 		return;
 	}
 	
-	public function queryInsert($sql) {
+	function queryInsert($sql) {
 		$result = mysql_query ( $sql );
 		return mysql_insert_id ();
 	}
 	
-	public function query($sql) {
+	function query($sql) {
 		$result = mysql_query ( $sql );
 		return $result;
 	}
 	
-	public function disconnectDBServer() {
+	function disconnectDBServer() {
 		mysql_close ( $this->link );
 	}
 	
-	public function arrayAssoc($result) {
+	function arrayAssoc($result) {
 		return mysql_fetch_assoc ( $result );
 	}
 	
-	public function resultToArray($result) {
+	function resultToArray($result) {
 		$array = array ();
 		while ( $row = self::arrayAssoc ( $result ) ) {
 			$array [] = $row;
 		}
 		return $array;
+	}
+	
+	function __destruct() {
+		print "Destroying " . $this->name . "\n";
 	}
 }
 ?>
